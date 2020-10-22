@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os, json, nmap, re
 from Log import *
+from IPy import IP
 
 NAME, VERSION, AUTHOR, LICENSE = "Public Monitor", "V0.1", "咚咚呛", "Public (FREE)"
 
@@ -88,10 +89,13 @@ class PublicScan:
             with open(self.file) as f:
                 for line in f:
                     if line.strip():
-                        if self.checkip(line.strip()):
-                            self.ip_list.append(line.strip())
-                        else:
-                            return False
+                        # 增加支持ip段扫描
+                        iplist = IP(line.strip())
+                        for ip in iplist:
+                            if self.checkip(str(ip)):
+                                self.ip_list.append(str(ip))
+                            else:
+                                return False
             return True
         else:
             return False
